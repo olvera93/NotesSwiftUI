@@ -11,7 +11,13 @@ struct Home: View {
     
     @StateObject var model = ViewModel()
     @Environment(\.managedObjectContext) var context
-    @FetchRequest(entity: Notes.entity(), sortDescriptors: [NSSortDescriptor(key: "date", ascending: true)], animation: .spring()) var results : FetchedResults<Notes>
+    //@FetchRequest(entity: Notes.entity(), sortDescriptors: [NSSortDescriptor(key: "date", ascending: true)], animation: .spring()) var results : FetchedResults<Notes>
+    
+    @FetchRequest(
+        entity: Notes.entity(),
+        sortDescriptors: [],
+        predicate: NSPredicate(format: "date >= %@", Date() as CVarArg),
+        animation: .spring()) var results : FetchedResults<Notes>
     
     var body: some View {
         NavigationView() {
@@ -25,7 +31,7 @@ struct Home: View {
                         Text(item.date ?? Date(), style: .date)
                     }.contextMenu(ContextMenu(menuItems: {
                         Button(action: {
-                            print("Edit")
+                            model.sendData(item: item)
                         }) {
                             Label(
                                 title: { Text("Edit") },
